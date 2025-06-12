@@ -1,0 +1,26 @@
+.tableEmpty {
+  padding: 8px;
+  text-align: center;
+}
+
+.tableBodyRow {
+  border-bottom: 1px solid #e0e0e0;
+  display: table-row;
+}
+
+.tableBodyCell {
+  padding: 8px;
+  border-right: 1px solid #e0e0e0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  display: table-cell;
+}
+
+.tableBodySpace {
+  padding: 0;
+  border: none;
+  line-height: 0;
+  font-size: 0;
+}
