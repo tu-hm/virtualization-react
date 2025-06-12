@@ -19,7 +19,7 @@ const TableBody = <ItemType extends { id: number }>({
   startIndex,
   endIndex,
   rowHeight,
-  offsetY: offset,
+  offsetY,
   totalHeight,
 }: TableBodyProps<ItemType>) => {
   const visibleData = useMemo(
@@ -27,8 +27,44 @@ const TableBody = <ItemType extends { id: number }>({
     [data, startIndex, endIndex]
   );
 
-  const unusedBottomHeight =
-    totalHeight - offset - visibleData.length * rowHeight;
+  const bottomSpacerHeight = useMemo(
+    () => totalHeight - offsetY - visibleData.length * rowHeight,
+    [totalHeight, offsetY, visibleData.length, rowHeight]
+  );
+
+  const renderSpacerRow = (height: number) => (
+    <tr style={{ height }}>
+      <td
+        colSpan={columns.length}
+        style={{ height }}
+        className={styles.tableBodySpace}
+      />
+    </tr>
+  );
+
+  const renderCellValue = (column: Column<ItemType>, row: ItemType) => {
+    const cellValue = row[column.key];
+    
+    if (!column.render) {
+      return String(cellValue ?? "");
+    }
+    
+    return column.render.length === 1
+      ? column.render(cellValue)
+      : column.render(cellValue, row);
+  };
+
+  const getCellWidth = (column: Column<ItemType>) => {
+    return column.width ? `${column.width}px` : `${100 / columns.length}%`;
+  };
+
+  const getCellMinWidth = (column: Column<ItemType>) => {
+    return column.width ? `${column.width}px` : "120px";
+  };
+
+  const getCellMaxWidth = (column: Column<ItemType>) => {
+    return column.width ? `${column.width}px` : "none";
+  };
 
   if (data.length === 0) {
     return (
@@ -42,23 +78,9 @@ const TableBody = <ItemType extends { id: number }>({
     );
   }
 
-  const renderSpacerRow = (height: number) => (
-    <tr style={{ height, display: 'table-row' }}>
-      <td
-        colSpan={columns.length}
-        style={{
-          height,
-          minHeight: height,
-          maxHeight: height,
-        }}
-        className={styles.tableBodySpace}
-      />
-    </tr>
-  );
-
   return (
     <tbody>
-      {offset > 0 && renderSpacerRow(offset)}
+      {offsetY > 0 && renderSpacerRow(offsetY)}
 
       {visibleData.map((row) => (
         <tr
@@ -66,36 +88,23 @@ const TableBody = <ItemType extends { id: number }>({
           className={styles.tableBodyRow}
           style={{ height: rowHeight }}
         >
-          {columns.map((column) => {
-            const cellValue = row[column.key];
-             const displayValue = column.render
-              ? column.render.length === 1
-                ? column.render(cellValue)
-                : column.render(cellValue, row)
-              : String(cellValue ?? "");
-
-            const width = column.width
-              ? `${column.width}px`
-              : `${100 / columns.length}%`;
-
-            return (
-              <td
-                key={String(column.key)}
-                className={styles.tableBodyCell}
-                style={{
-                  width,
-                  minWidth: column.width ? `${column.width}px` : "120px",
-                  maxWidth: column.width ? `${column.width}px` : "none",
-                }}
-              >
-                {displayValue}
-              </td>
-            );
-          })}
+          {columns.map((column) => (
+            <td
+              key={String(column.key)}
+              className={styles.tableBodyCell}
+              style={{
+                width: getCellWidth(column),
+                minWidth: getCellMinWidth(column),
+                maxWidth: getCellMaxWidth(column),
+              }}
+            >
+              {renderCellValue(column, row)}
+            </td>
+          ))}
         </tr>
       ))}
 
-      {unusedBottomHeight > 0 && renderSpacerRow(unusedBottomHeight)}
+      {bottomSpacerHeight > 0 && renderSpacerRow(bottomSpacerHeight)}
     </tbody>
   );
 };
