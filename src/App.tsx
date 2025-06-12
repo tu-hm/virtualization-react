@@ -1,7 +1,8 @@
-function App() {
+import Demo from "./component/Demo"
 
+function App() {
   return (
-    <></>
+    <Demo />
   )
 }
 

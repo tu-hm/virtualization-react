@@ -1,0 +1,12 @@
+.tableWrapper {
+  overflow: auto;
+  border: 1px solid;
+  border-radius: '4px';
+}
+
+.tableGeneral {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  display: table;
+}

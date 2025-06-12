@@ -1,0 +1,7 @@
+export const DEFAULT_DATA_SIZE = 1000;
+export const DEFAULT_MINIMUM_AMOUNT = 10000;
+export const DEFAULT_MAXIMUM_AMOUNT = 20000;
+
+export const DEFAULT_TABLE_HEIGHT = 400;
+export const DEFAULT_ROW_HEIGHT = 40;
+export const DEFAULT_OVER_SCAN = 5;
